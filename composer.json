@@ -44,7 +44,7 @@
       "icon": {
         "name": "fas fa-clipboard-user",
         "backgroundColor": "#84DCC6",
-        "color": "#fff"
+        "color": "#1A1A1A"
       }
     }
   },
