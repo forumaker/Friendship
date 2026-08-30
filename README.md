@@ -15,7 +15,7 @@ Adds a friendship system — members send friend requests, build a friends list 
 
 
 ## 📸 Screenshots
-<img width="1230" height="400" alt="image" src="https://github.com/user-attachments/assets/2eebe928-38f7-4778-aba9-45ca8d7025cd" />
+<img width="1235" height="485" alt="image" src="https://github.com/user-attachments/assets/04e1d3da-7c33-4b2c-a1fc-9b10c4291963" />
 
 ___
 
