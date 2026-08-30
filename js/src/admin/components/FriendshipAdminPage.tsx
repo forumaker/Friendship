@@ -76,6 +76,25 @@ export default class FriendshipAdminPage extends ExtensionPage {
             </div>
           </div>
 
+          <div className="FriendshipAdminPage-section">
+            <h3>
+              <i className="fas fa-history" aria-hidden="true" />
+              {app.translator.trans('forumaker-friendship.admin.sections.history')}
+            </h3>
+            <p className="helpText">{app.translator.trans('forumaker-friendship.admin.settings.event_retention_intro')}</p>
+
+            <div className="Form-group">
+              {this.buildSettingComponent({
+                setting: 'forumaker-friendship.event_retention_days',
+                label: app.translator.trans('forumaker-friendship.admin.settings.event_retention_days'),
+                help: app.translator.trans('forumaker-friendship.admin.settings.event_retention_days_help'),
+                type: 'number',
+                min: 0,
+                default: 90,
+              })}
+            </div>
+          </div>
+
           <div className="Form-group">{this.submitButton()}</div>
         </div>
       </div>

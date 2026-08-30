@@ -23,15 +23,6 @@ class FriendshipRequestPolicy extends AbstractPolicy
         return null;
     }
 
-    public function create(User $actor): ?string
-    {
-        if ($actor->hasPermission('friendship.addFriends')) {
-            return $this->allow();
-        }
-
-        return null;
-    }
-
     /**
      * Covers cancelling (by the sender) — declining is handled by the
      * dedicated accept/decline controllers, not the JSON:API delete

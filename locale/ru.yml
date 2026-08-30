@@ -3,7 +3,6 @@ forumaker-friendship:
     errors:
       user_not_found: "Пользователь не найден"
       request_not_found: "Заявка в друзья не найдена"
-      not_recipient: "Вы не можете ответить на эту заявку"
       not_friends: "Вы не друзья с этим пользователем"
       self_request: "Нельзя отправить заявку в друзья самому себе"
       already_friends: "Вы уже друзья с этим пользователем"
@@ -94,6 +93,7 @@ forumaker-friendship:
   admin:
     sections:
       badges: "Значок"
+      history: "История"
 
     settings:
       badges_intro: "Если что-либо включено, пользователи смогут регулировать это в своих настройках"
@@ -103,6 +103,9 @@ forumaker-friendship:
       show_badge_on_post_help: "Отображается рядом с аватаром в шапке сообщения"
       badge_color: "Цвет и иконка в профиле"
       badge_bg_color: "Цвет подложки в сообщениях"
+      event_retention_intro: "Записи с заявками в друзья"
+      event_retention_days: "Сколько дней хранить историю"
+      event_retention_days_help: "0 — не удалять никогда"
 
     permissions:
       add_friends: "Добавлять в друзья"

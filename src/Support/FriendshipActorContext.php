@@ -16,6 +16,13 @@ use forumaker\Friendship\FriendshipRequest;
  * per actor) — instead, this fetches the actor's id sets once (four
  * queries total, however many users end up serialized in the response) and
  * every field lookup afterward is an in-memory lookup.
+ *
+ * Instance-level cache, not static: the container resolves one instance of
+ * this class per request (injected into UserResourceFields, itself resolved
+ * once per request and reused for every row), so the cache naturally clears
+ * between requests. A static property would instead persist for the
+ * lifetime of the PHP process under a long-running worker model (Octane,
+ * FrankenPHP, RoadRunner), serving stale friendship state to later requests.
  */
 class FriendshipActorContext
 {
@@ -28,7 +35,7 @@ class FriendshipActorContext
      *     outgoingRequestIds: array<int, int>,
      * }>
      */
-    private static array $cache = [];
+    private array $cache = [];
 
     /**
      * @return array{
@@ -39,14 +46,14 @@ class FriendshipActorContext
      *     outgoingRequestIds: array<int, int>,
      * }
      */
-    public static function forActor(User $actor): array
+    public function forActor(User $actor): array
     {
         if ($actor->isGuest()) {
             return ['friends' => [], 'outgoing' => [], 'incoming' => [], 'incomingRequestIds' => [], 'outgoingRequestIds' => []];
         }
 
-        if (isset(self::$cache[$actor->id])) {
-            return self::$cache[$actor->id];
+        if (isset($this->cache[$actor->id])) {
+            return $this->cache[$actor->id];
         }
 
         // otherUserId => requestId — lets the frontend act on a specific
@@ -59,7 +66,7 @@ class FriendshipActorContext
             ->pluck('id', 'recipient_id')
             ->all();
 
-        return self::$cache[$actor->id] = [
+        return $this->cache[$actor->id] = [
             'friends' => Friendship::where('user_id', $actor->id)->pluck('friend_id')->all(),
             'outgoing' => array_keys($outgoingRequestIds),
             'incoming' => array_keys($incomingRequestIds),

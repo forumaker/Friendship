@@ -84,11 +84,19 @@ return [
         ->default('forumaker-friendship.show_badge_on_post', true)
         ->default('forumaker-friendship.badge_color', '#ffcb7f')
         ->default('forumaker-friendship.badge_bg_color', '#ffcb7f')
-        ->default('forumaker-friendship.badge_icon', 'fas fa-clipboard-user'),
+        ->default('forumaker-friendship.badge_icon', 'fas fa-clipboard-user')
+        ->default('forumaker-friendship.event_retention_days', 90),
 
     // Model policies for authorization
     (new Extend\Policy())
         ->modelPolicy(FriendshipRequest::class, Access\FriendshipRequestPolicy::class)
         ->modelPolicy(Friendship::class, Access\FriendshipPolicy::class)
         ->modelPolicy(FriendshipEvent::class, Access\FriendshipEventPolicy::class),
+
+    // Prunes friendship_events past the configured retention window — see
+    // Console\PruneEventsCommand's docblock. Runs daily; also runnable by
+    // hand via `php flarum forumaker-friendship:prune-events`.
+    (new Extend\Console())
+        ->command(Console\PruneEventsCommand::class)
+        ->schedule(Console\PruneEventsCommand::class, fn ($event) => $event->daily()),
 ];

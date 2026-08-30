@@ -9,6 +9,7 @@ use Flarum\Foundation\ValidationException;
 use Flarum\Locale\TranslatorInterface;
 use Flarum\Notification\NotificationSyncer;
 use Flarum\User\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use forumaker\Friendship\Friendship;
 use forumaker\Friendship\FriendshipEvent;
 use forumaker\Friendship\FriendshipRequest;
@@ -77,11 +78,18 @@ class FriendshipManager
         $request->setRelation('sender', $actor);
         $request->setRelation('recipient', $recipient);
 
-        $request->getConnection()->transaction(function () use ($actor, $request, $recipient) {
-            $request->save();
+        try {
+            $request->getConnection()->transaction(function () use ($actor, $request, $recipient) {
+                $request->save();
 
-            $this->logEvent($actor, $actor, $recipient, FriendshipEvent::ACTION_REQUESTED);
-        });
+                $this->logEvent($actor, $actor, $recipient, FriendshipEvent::ACTION_REQUESTED);
+            });
+        } catch (UniqueConstraintViolationException $e) {
+            // A concurrent request for the same pair won the race between our
+            // $existing check above and this insert — same outcome as the
+            // check finding it: the request already exists, nothing to do.
+            return ['status' => 'requested'];
+        }
 
         $this->notifications->sync(
             new FriendshipRequestedBlueprint($request),

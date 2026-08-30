@@ -6,6 +6,7 @@ namespace forumaker\Friendship\Api\Controller;
 
 use Flarum\Http\RequestUtil;
 use Flarum\Locale\TranslatorInterface;
+use Flarum\User\Exception\PermissionDeniedException;
 use forumaker\Friendship\FriendshipRequest;
 use forumaker\Friendship\Support\FriendshipManager;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -37,7 +38,7 @@ class AcceptFriendRequestController implements RequestHandlerInterface
             && ! $actor->hasPermission('friendship.moderate')
             && ! $actor->hasPermission('friendship.manage')
         ) {
-            return new JsonResponse(['error' => $this->translator->trans('forumaker-friendship.lib.errors.not_recipient')], 403);
+            throw new PermissionDeniedException();
         }
 
         $this->manager->acceptRequest($actor, $friendshipRequest);

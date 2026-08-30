@@ -10,6 +10,10 @@ use forumaker\Friendship\Support\FriendshipActorContext;
 
 class UserResourceFields
 {
+    public function __construct(protected FriendshipActorContext $actorContext)
+    {
+    }
+
     public function __invoke(): array
     {
         return [
@@ -28,7 +32,7 @@ class UserResourceFields
                         return false;
                     }
 
-                    return in_array($user->id, FriendshipActorContext::forActor($actor)['friends'], true);
+                    return in_array($user->id, $this->actorContext->forActor($actor)['friends'], true);
                 }),
             Schema\Boolean::make('friendshipHasPendingOutgoing')
                 ->get(function ($user, Context $context) {
@@ -37,7 +41,7 @@ class UserResourceFields
                         return false;
                     }
 
-                    return in_array($user->id, FriendshipActorContext::forActor($actor)['outgoing'], true);
+                    return in_array($user->id, $this->actorContext->forActor($actor)['outgoing'], true);
                 }),
             Schema\Boolean::make('friendshipHasPendingIncoming')
                 ->get(function ($user, Context $context) {
@@ -46,7 +50,7 @@ class UserResourceFields
                         return false;
                     }
 
-                    return in_array($user->id, FriendshipActorContext::forActor($actor)['incoming'], true);
+                    return in_array($user->id, $this->actorContext->forActor($actor)['incoming'], true);
                 }),
             // The pending request's id when $user already sent the actor
             // one — lets the "already requested you" confirm modal
@@ -58,7 +62,7 @@ class UserResourceFields
                         return null;
                     }
 
-                    return FriendshipActorContext::forActor($actor)['incomingRequestIds'][$user->id] ?? null;
+                    return $this->actorContext->forActor($actor)['incomingRequestIds'][$user->id] ?? null;
                 })
                 ->nullable(),
             // The actor's own pending request's id when they're the one
@@ -71,7 +75,7 @@ class UserResourceFields
                         return null;
                     }
 
-                    return FriendshipActorContext::forActor($actor)['outgoingRequestIds'][$user->id] ?? null;
+                    return $this->actorContext->forActor($actor)['outgoingRequestIds'][$user->id] ?? null;
                 })
                 ->nullable(),
             // Per-user opt-outs for the two badges — combined with the
