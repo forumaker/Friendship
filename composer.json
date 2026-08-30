@@ -43,7 +43,7 @@
       "category": "feature",
       "icon": {
         "name": "fas fa-clipboard-user",
-        "backgroundColor": "#84DCC6",
+        "backgroundColor": "#ffcb7f",
         "color": "#1A1A1A"
       }
     }

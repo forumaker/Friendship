@@ -61,30 +61,24 @@ export default class FriendsPage extends UserPage {
     m.redraw();
 
     try {
-      const params: Record<string, unknown> = {
-        'filter[user]': this.user.id(),
+      const filter: Record<string, unknown> = { user: this.user.id() };
+      if (this.search.trim()) filter.q = this.search.trim();
+
+      const results = await app.store.find<Friendship[]>('friendships', {
+        filter,
         include: 'friend',
         sort: '-createdAt',
-        'page[offset]': loadMore ? this.friends.length : 0,
-        'page[limit]': 24,
-      };
-      if (this.search.trim()) params['filter[q]'] = this.search.trim();
-
-      const response = await app.request<any>({
-        method: 'GET',
-        url: `${app.forum.attribute('apiUrl')}/friendships`,
-        params,
+        page: { offset: loadMore ? this.friends.length : 0, limit: 24 },
       });
-
-      (response.included || []).forEach((inc: any) => app.store.pushObject(inc));
-      const newFriends = response.data.map((d: any) => app.store.pushObject(d)) as Friendship[];
+      const newFriends = results as unknown as Friendship[];
 
       this.friends = loadMore ? [...this.friends, ...newFriends] : newFriends;
 
-      if (response.meta?.page?.total !== undefined) {
-        this.totalCount = response.meta.page.total;
-      } else if (response.meta?.total !== undefined) {
-        this.totalCount = response.meta.total;
+      const meta = (results as unknown as { payload?: { meta?: any } }).payload?.meta;
+      if (meta?.page?.total !== undefined) {
+        this.totalCount = meta.page.total;
+      } else if (meta?.total !== undefined) {
+        this.totalCount = meta.total;
       } else if (!loadMore) {
         this.totalCount = this.friends.length;
       }

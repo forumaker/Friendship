@@ -14,13 +14,13 @@ export default function addFriendBadgeToUserCard(): void {
     const count = (user.attribute('friendCount') as number) || 0;
     if (count === 0) return;
 
-    const color = (app.forum.attribute('friendshipBadgeColor') as string) || '#84DCC6';
+    const color = (app.forum.attribute('friendshipBadgeColor') as string) || '#ffcb7f';
     const icon = (app.forum.attribute('friendshipBadgeIcon') as string) || 'fas fa-clipboard-user';
 
     items.add(
       'friendCount',
-      <Link href={app.route('user.friendship', { username: user.username() })} className="FriendshipBadge" style={{ color }}>
-        <i className={icon} />
+      <Link href={app.route('user.friendship', { username: user.username() })} className="FriendshipBadge">
+        <i className={icon} style={{ color }} />
         <span className="FriendshipBadge-count">{count}</span>
       </Link>,
       12

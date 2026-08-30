@@ -60,22 +60,17 @@ export default class HistoryModal extends Modal<HistoryModalAttrs> {
     m.redraw();
 
     try {
-      const response = await app.request<any>({
-        method: 'GET',
-        url: `${app.forum.attribute('apiUrl')}/friendship-events`,
-        params: {
-          'filter[user]': this.attrs.user.id(),
-          include: 'otherUser,actor',
-          'page[offset]': loadMore ? this.events.length : 0,
-          'page[limit]': 20,
-        },
+      const results = await app.store.find<FriendshipEvent[]>('friendship-events', {
+        filter: { user: this.attrs.user.id() },
+        include: 'otherUser,actor',
+        page: { offset: loadMore ? this.events.length : 0, limit: 20 },
       });
-
-      (response.included || []).forEach((inc: any) => app.store.pushObject(inc));
-      const newEvents = response.data.map((d: any) => app.store.pushObject(d)) as FriendshipEvent[];
+      const newEvents = results as unknown as FriendshipEvent[];
 
       this.events = loadMore ? [...this.events, ...newEvents] : newEvents;
-      this.total = response.meta?.page?.total ?? response.meta?.total ?? this.events.length;
+
+      const meta = (results as unknown as { payload?: { meta?: any } }).payload?.meta;
+      this.total = meta?.page?.total ?? meta?.total ?? this.events.length;
       this.hasMore = this.events.length < this.total;
     } finally {
       this.loading = false;

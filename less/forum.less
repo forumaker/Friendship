@@ -4,28 +4,73 @@
 // Badges (UserCard-info + Post-header)
 // ==========================================
 
+// Translucent pill on the profile hero — same treatment as the badges
+// extension's .UserCardBadge and Arena's .ArenaLevelBadge, so all three
+// extensions' UserCard plaques read as one family.
 .FriendshipBadge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  color: inherit;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 12px;
 
-  .icon {
-    font-size: 12px;
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  i {
+    font-size: 11px;
+  }
+
+  &-count {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.4;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.25);
   }
 }
 
+// Solid pill in the post header, filled with the admin-configured badge
+// color (background/color set inline, contrast picked via getContrastColor)
+// — matches Arena's .ArenaWinBadge--post treatment so both extensions'
+// post badges carry the same visual weight next to each other.
 .FriendshipPostBadge {
-  display: inline-flex;
-  align-items: center;
+  width: auto !important;
+  border-radius: 100px !important;
+  padding: 0 7px 0 5px !important;
+  box-shadow: none !important;
   gap: 4px;
+  display: inline-flex !important;
+  align-items: center;
+  font-size: .72em;
+  font-weight: 700;
+  line-height: 20px;
+  white-space: nowrap;
   margin-left: 6px;
   vertical-align: middle;
-  color: var(--muted-color);
-  font-size: 12px;
+  text-decoration: none;
 
   &:hover {
-    color: var(--text-color);
+    text-decoration: none;
+    opacity: 0.85;
+  }
+
+  i {
+    font-size: .9em;
+  }
+
+  &-count {
+    line-height: 1;
+    vertical-align: middle;
   }
 }
 

@@ -1,14 +1,18 @@
 import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
+import { getContrastColor } from '../../common';
 
 const BADGE_COLOR_SETTING = 'forumaker-friendship.badge_color';
-const BADGE_COLOR_DEFAULT = '#84DCC6';
+const BADGE_COLOR_DEFAULT = '#ffcb7f';
+const BADGE_BG_COLOR_SETTING = 'forumaker-friendship.badge_bg_color';
+const BADGE_BG_COLOR_DEFAULT = '#ffcb7f';
 const BADGE_ICON_SETTING = 'forumaker-friendship.badge_icon';
 const BADGE_ICON_DEFAULT = 'fas fa-clipboard-user';
 
 export default class FriendshipAdminPage extends ExtensionPage {
   content() {
     const colorStream = this.setting(BADGE_COLOR_SETTING, BADGE_COLOR_DEFAULT);
+    const bgColorStream = this.setting(BADGE_BG_COLOR_SETTING, BADGE_BG_COLOR_DEFAULT);
     const iconStream = this.setting(BADGE_ICON_SETTING, BADGE_ICON_DEFAULT);
 
     return (
@@ -50,6 +54,23 @@ export default class FriendshipAdminPage extends ExtensionPage {
                 />
                 <span className="FriendshipAdminPage-iconPreview">
                   <i className={iconStream() || BADGE_ICON_DEFAULT} style={{ color: colorStream() || BADGE_COLOR_DEFAULT }} />
+                </span>
+              </div>
+            </div>
+            <div className="Form-group">
+              <label>{app.translator.trans('forumaker-friendship.admin.settings.badge_bg_color')}</label>
+              <div className="FriendshipAdminPage-colorRow">
+                <input type="color" className="FriendshipAdminPage-colorInput" bidi={bgColorStream} />
+                <input type="text" className="FormControl FriendshipAdminPage-colorHex" bidi={bgColorStream} />
+                <span
+                  className="Badge FriendshipAdminPage-bgPreview"
+                  style={{
+                    background: bgColorStream() || BADGE_BG_COLOR_DEFAULT,
+                    color: getContrastColor(bgColorStream() || BADGE_BG_COLOR_DEFAULT),
+                  }}
+                >
+                  <i className={iconStream() || BADGE_ICON_DEFAULT} />
+                  <span>9</span>
                 </span>
               </div>
             </div>

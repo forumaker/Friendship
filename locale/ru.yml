@@ -101,7 +101,8 @@ forumaker-friendship:
       show_badge_on_usercard_help: "Отображается рядом со статусом и датой регистрации в карточке профиля"
       show_badge_on_post: "Показывать количество друзей рядом с аватаром в сообщениях"
       show_badge_on_post_help: "Отображается рядом с аватаром в шапке сообщения"
-      badge_color: "Цвет и иконка"
+      badge_color: "Цвет и иконка в профиле"
+      badge_bg_color: "Цвет подложки в сообщениях"
 
     permissions:
       add_friends: "Добавлять в друзья"

@@ -108,4 +108,19 @@
     border: 1px solid var(--control-border-color);
     font-size: 15px;
   }
+
+  // Same metrics as .FriendshipPostBadge in forum.less, so the preview
+  // matches the real thing in posts pixel-for-pixel.
+  &-bgPreview {
+    width: auto !important;
+    border-radius: 100px !important;
+    padding: 0 7px 0 5px !important;
+    box-shadow: none !important;
+    gap: 4px;
+    display: inline-flex !important;
+    align-items: center;
+    font-size: .72em;
+    font-weight: 700;
+    line-height: 20px;
+  }
 }

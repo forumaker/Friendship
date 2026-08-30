@@ -82,25 +82,20 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
     m.redraw();
 
     try {
-      const params: Record<string, unknown> = {
-        [`filter[${direction}]`]: this.attrs.user.id(),
+      const filter: Record<string, unknown> = { [direction]: this.attrs.user.id() };
+      if (state.search.trim()) filter.q = state.search.trim();
+
+      const results = await app.store.find<FriendshipRequest[]>('friendship-requests', {
+        filter,
         include: 'sender,recipient',
-        'page[offset]': loadMore ? state.items.length : 0,
-        'page[limit]': PAGE_SIZE,
-      };
-      if (state.search.trim()) params['filter[q]'] = state.search.trim();
-
-      const response = await app.request<any>({
-        method: 'GET',
-        url: `${app.forum.attribute('apiUrl')}/friendship-requests`,
-        params,
+        page: { offset: loadMore ? state.items.length : 0, limit: PAGE_SIZE },
       });
-
-      (response.included || []).forEach((inc: any) => app.store.pushObject(inc));
-      const newItems = response.data.map((d: any) => app.store.pushObject(d)) as FriendshipRequest[];
+      const newItems = results as unknown as FriendshipRequest[];
 
       state.items = loadMore ? [...state.items, ...newItems] : newItems;
-      state.total = response.meta?.page?.total ?? response.meta?.total ?? state.items.length;
+
+      const meta = (results as unknown as { payload?: { meta?: any } }).payload?.meta;
+      state.total = meta?.page?.total ?? meta?.total ?? state.items.length;
       state.hasMore = state.items.length < state.total;
     } finally {
       state.loadingMore = false;

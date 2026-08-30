@@ -30,7 +30,9 @@ class ForumResourceFields
             Schema\Boolean::make('friendshipShowBadgeOnPost')
                 ->get(fn () => (bool) $this->settings->get('forumaker-friendship.show_badge_on_post', true)),
             Schema\Str::make('friendshipBadgeColor')
-                ->get(fn () => $this->settings->get('forumaker-friendship.badge_color', '#84DCC6')),
+                ->get(fn () => $this->settings->get('forumaker-friendship.badge_color', '#ffcb7f')),
+            Schema\Str::make('friendshipBadgeBgColor')
+                ->get(fn () => $this->settings->get('forumaker-friendship.badge_bg_color', '#ffcb7f')),
             Schema\Str::make('friendshipBadgeIcon')
                 ->get(fn () => $this->settings->get('forumaker-friendship.badge_icon', 'fas fa-clipboard-user')),
         ];
