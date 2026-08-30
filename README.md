@@ -13,7 +13,17 @@ Adds a friendship system — members send friend requests, build a friends list 
 - ➕ Add/remove friend button in the profile dropdown and on other users' «Друзья» page
 - 🔐 Separate permissions for adding friends, viewing others' friends lists, and moderating
 
+
 ## 📸 Screenshots
+<img width="1230" height="400" alt="image" src="https://github.com/user-attachments/assets/2eebe928-38f7-4778-aba9-45ca8d7025cd" />
+
+___
+
+<img width="1250" height="235" alt="image" src="https://github.com/user-attachments/assets/98643bf6-2065-4128-be40-dbe030986f04" />
+
+___
+
+<img width="1250" height="465" alt="image" src="https://github.com/user-attachments/assets/62fec215-3166-4994-a01f-a45230f2922f" />
 
 
 ## 📦 Installation
@@ -22,6 +32,7 @@ Run in your Flarum root directory:
 ```
 composer require forumaker/friendship:"*"
 ```
+
 
 ## 🔗 Links
 - [**GitHub Repository**](https://github.com/forumaker/friendship)
