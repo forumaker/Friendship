@@ -90,9 +90,11 @@ class FriendshipManager
         $sender = $request->sender;
         $recipient = $request->recipient;
 
-        $request->delete();
+        $request->getConnection()->transaction(function () use ($actor, $request, $sender, $recipient) {
+            $request->delete();
 
-        $this->logEvent($actor, $sender, $recipient, FriendshipEvent::ACTION_CANCELLED);
+            $this->logEvent($actor, $sender, $recipient, FriendshipEvent::ACTION_CANCELLED);
+        });
     }
 
     public function acceptRequest(User $actor, FriendshipRequest $request): void
@@ -100,7 +102,7 @@ class FriendshipManager
         $sender = $request->sender;
         $recipient = $request->recipient;
 
-        FriendshipRequest::query()->getConnection()->transaction(function () use ($request, $sender, $recipient) {
+        FriendshipRequest::query()->getConnection()->transaction(function () use ($actor, $request, $sender, $recipient) {
             $now = $request->created_at ?? Carbon::now();
 
             Friendship::query()->firstOrCreate(
@@ -113,9 +115,9 @@ class FriendshipManager
             );
 
             $request->delete();
-        });
 
-        $this->logEvent($actor, $sender, $recipient, FriendshipEvent::ACTION_ACCEPTED);
+            $this->logEvent($actor, $sender, $recipient, FriendshipEvent::ACTION_ACCEPTED);
+        });
     }
 
     public function declineRequest(User $actor, FriendshipRequest $request): void
@@ -123,9 +125,11 @@ class FriendshipManager
         $sender = $request->sender;
         $recipient = $request->recipient;
 
-        $request->delete();
+        $request->getConnection()->transaction(function () use ($actor, $request, $sender, $recipient) {
+            $request->delete();
 
-        $this->logEvent($actor, $sender, $recipient, FriendshipEvent::ACTION_DECLINED);
+            $this->logEvent($actor, $sender, $recipient, FriendshipEvent::ACTION_DECLINED);
+        });
 
         $this->notifications->sync(
             new FriendshipDeclinedBlueprint($actor),
