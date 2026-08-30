@@ -5,6 +5,8 @@ forumaker-friendship:
       request_not_found: "Friend request not found"
       not_recipient: "You cannot respond to this request"
       not_friends: "You are not friends with this user"
+      self_request: "Cannot send a friend request to yourself"
+      already_friends: "You are already friends with this user"
 
   forum:
     user:

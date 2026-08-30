@@ -61,6 +61,7 @@ class FriendshipResource extends AbstractDatabaseResource
     {
         return [
             Endpoint\Index::make()
+                ->authenticated()
                 ->paginate(50, 100)
                 ->defaultInclude(['friend'])
                 ->defaultSort('-createdAt')

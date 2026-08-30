@@ -6,6 +6,7 @@ namespace forumaker\Friendship\Support;
 
 use Carbon\Carbon;
 use Flarum\Foundation\ValidationException;
+use Flarum\Locale\TranslatorInterface;
 use Flarum\Notification\NotificationSyncer;
 use Flarum\User\User;
 use forumaker\Friendship\Friendship;
@@ -28,6 +29,7 @@ class FriendshipManager
 {
     public function __construct(
         protected NotificationSyncer $notifications,
+        protected TranslatorInterface $translator,
     ) {
     }
 
@@ -38,13 +40,13 @@ class FriendshipManager
     {
         if ($actor->id === $recipient->id) {
             throw new ValidationException([
-                'recipient' => 'Cannot send a friend request to yourself.',
+                'recipient' => $this->translator->trans('forumaker-friendship.lib.errors.self_request'),
             ]);
         }
 
         if ($this->areFriends($actor->id, $recipient->id)) {
             throw new ValidationException([
-                'recipient' => 'Users are already friends.',
+                'recipient' => $this->translator->trans('forumaker-friendship.lib.errors.already_friends'),
             ]);
         }
 

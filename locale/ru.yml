@@ -5,6 +5,8 @@ forumaker-friendship:
       request_not_found: "Заявка в друзья не найдена"
       not_recipient: "Вы не можете ответить на эту заявку"
       not_friends: "Вы не друзья с этим пользователем"
+      self_request: "Нельзя отправить заявку в друзья самому себе"
+      already_friends: "Вы уже друзья с этим пользователем"
 
   forum:
     user:
