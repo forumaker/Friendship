@@ -76,9 +76,12 @@ class FriendshipManager
         $request->created_at = Carbon::now();
         $request->setRelation('sender', $actor);
         $request->setRelation('recipient', $recipient);
-        $request->save();
 
-        $this->logEvent($actor, $actor, $recipient, FriendshipEvent::ACTION_REQUESTED);
+        $request->getConnection()->transaction(function () use ($actor, $request, $recipient) {
+            $request->save();
+
+            $this->logEvent($actor, $actor, $recipient, FriendshipEvent::ACTION_REQUESTED);
+        });
 
         $this->notifications->sync(
             new FriendshipRequestedBlueprint($request),
@@ -148,12 +151,12 @@ class FriendshipManager
         $user = $friendship->user;
         $friend = $friendship->friend;
 
-        Friendship::query()->getConnection()->transaction(function () use ($userId, $friendId) {
+        Friendship::query()->getConnection()->transaction(function () use ($actor, $userId, $friendId, $user, $friend) {
             Friendship::where('user_id', $userId)->where('friend_id', $friendId)->delete();
             Friendship::where('user_id', $friendId)->where('friend_id', $userId)->delete();
-        });
 
-        $this->logEvent($actor, $user, $friend, FriendshipEvent::ACTION_REMOVED);
+            $this->logEvent($actor, $user, $friend, FriendshipEvent::ACTION_REMOVED);
+        });
 
         $notify = array_values(array_filter([$user, $friend], fn (User $u) => $u->id !== $actor->id));
 
@@ -178,21 +181,19 @@ class FriendshipManager
     {
         $now = Carbon::now();
 
-        FriendshipEvent::query()->getConnection()->transaction(function () use ($userA, $userB, $actor, $action, $now) {
-            FriendshipEvent::create([
-                'user_id' => $userA->id,
-                'other_user_id' => $userB->id,
-                'actor_id' => $actor->id,
-                'action' => $action,
-                'created_at' => $now,
-            ]);
-            FriendshipEvent::create([
-                'user_id' => $userB->id,
-                'other_user_id' => $userA->id,
-                'actor_id' => $actor->id,
-                'action' => $action,
-                'created_at' => $now,
-            ]);
-        });
+        FriendshipEvent::create([
+            'user_id' => $userA->id,
+            'other_user_id' => $userB->id,
+            'actor_id' => $actor->id,
+            'action' => $action,
+            'created_at' => $now,
+        ]);
+        FriendshipEvent::create([
+            'user_id' => $userB->id,
+            'other_user_id' => $userA->id,
+            'actor_id' => $actor->id,
+            'action' => $action,
+            'created_at' => $now,
+        ]);
     }
 }

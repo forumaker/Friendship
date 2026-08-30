@@ -30,6 +30,7 @@ export default class HistoryModal extends Modal<HistoryModalAttrs> {
   loading: boolean = true;
   loadingMore: boolean = false;
   events: FriendshipEvent[] = [];
+  total: number = 0;
   hasMore: boolean = false;
 
   className() {
@@ -74,7 +75,8 @@ export default class HistoryModal extends Modal<HistoryModalAttrs> {
       const newEvents = response.data.map((d: any) => app.store.pushObject(d)) as FriendshipEvent[];
 
       this.events = loadMore ? [...this.events, ...newEvents] : newEvents;
-      this.hasMore = newEvents.length >= 20;
+      this.total = response.meta?.page?.total ?? response.meta?.total ?? this.events.length;
+      this.hasMore = this.events.length < this.total;
     } finally {
       this.loading = false;
       this.loadingMore = false;
