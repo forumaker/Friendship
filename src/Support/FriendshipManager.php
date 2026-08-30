@@ -73,6 +73,7 @@ class FriendshipManager
         $request = new FriendshipRequest();
         $request->sender_id = $actor->id;
         $request->recipient_id = $recipient->id;
+        $request->created_at = Carbon::now();
         $request->setRelation('sender', $actor);
         $request->setRelation('recipient', $recipient);
         $request->save();
