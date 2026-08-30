@@ -120,6 +120,45 @@ class ListEndpointsTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
+    /**
+     * filter[-user]=<id> ("not this user") would otherwise return every
+     * friendship on the forum that isn't this one user's — far wider than
+     * the single-user grant filter[user] is meant to allow. Rejected
+     * unconditionally regardless of the actor's own id/permissions.
+     */
+    public function test_friendships_negated_user_filter_is_rejected()
+    {
+        $response = $this->send($this->withFilter(
+            $this->request('GET', '/api/friendships', ['authenticatedAs' => 2]),
+            ['-user' => 2]
+        ));
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
+    public function test_friendship_requests_negated_filter_is_rejected()
+    {
+        $incoming = $this->send($this->withFilter(
+            $this->request('GET', '/api/friendship-requests', ['authenticatedAs' => 3]),
+            ['-incoming' => 3]
+        ));
+        $this->assertEquals(403, $incoming->getStatusCode());
+
+        $outgoing = $this->send($this->withFilter(
+            $this->request('GET', '/api/friendship-requests', ['authenticatedAs' => 2]),
+            ['-outgoing' => 2]
+        ));
+        $this->assertEquals(403, $outgoing->getStatusCode());
+    }
+
+    public function test_friendship_events_negated_filter_is_rejected()
+    {
+        $response = $this->send($this->withFilter(
+            $this->request('GET', '/api/friendship-events', ['authenticatedAs' => 2]),
+            ['-user' => 2]
+        ));
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
     public function test_history_filter_by_user_requires_moderate_for_others()
     {
         $own = $this->send($this->withFilter(

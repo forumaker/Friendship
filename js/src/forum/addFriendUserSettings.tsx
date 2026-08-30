@@ -3,7 +3,18 @@ import { extend } from 'flarum/common/extend';
 import Switch from 'flarum/common/components/Switch';
 import FieldSet from 'flarum/common/components/FieldSet';
 
-/** "Друзья" section on the user's own Settings page — one toggle per badge, each only shown where the matching admin-wide toggle is on. */
+/**
+ * "Друзья" section on the user's own Settings page — one toggle per badge,
+ * each only shown where the matching admin-wide toggle is on.
+ *
+ * String-based extend() is required here, not a direct import: Flarum core
+ * components are resolved via webpack externals from a runtime registry
+ * (flarum.reg), and a plain `import SettingsPage from '...'` can grab the
+ * binding before core has registered it, resolving to undefined and
+ * crashing the whole initializer with "Cannot read properties of
+ * undefined (reading 'prototype')" — confirmed live on 2026-08-31. Do not
+ * switch this to a direct import again.
+ */
 export default function addFriendUserSettings(): void {
   extend('flarum/forum/components/SettingsPage' as any, 'settingsItems', function (items: any) {
     const user = (this as any).user;

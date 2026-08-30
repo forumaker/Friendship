@@ -8,6 +8,10 @@ import { getContrastColor } from '../common';
  * Friend-count badge next to the author's name in a post's header — same
  * `userViewItems` extension point PostUser exposes for Arena's stats
  * badge, so both extensions' badges sit in the same row.
+ *
+ * String-based extend() is required here, not a direct import — see
+ * addFriendUserSettings.tsx's docblock for why (confirmed live crash on
+ * 2026-08-31 when this used a direct PostUser import).
  */
 export default function addFriendBadgeToPost(): void {
   extend('flarum/forum/components/PostUser' as any, 'userViewItems', function (items: any, user: User) {

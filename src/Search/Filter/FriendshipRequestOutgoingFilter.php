@@ -28,6 +28,13 @@ class FriendshipRequestOutgoingFilter implements FilterInterface
 
     public function filter(SearchState $state, string|array $value, bool $negate): void
     {
+        // Same reasoning as FriendshipUserFilter — negation would turn a
+        // single-user grant into "every outgoing request except this
+        // user's", leaking the whole table to a moderator scoped to one id.
+        if ($negate) {
+            throw new PermissionDeniedException();
+        }
+
         $userId = $this->asInt($value);
         $actor = $state->getActor();
 
@@ -39,6 +46,6 @@ class FriendshipRequestOutgoingFilter implements FilterInterface
         }
 
         /** @var DatabaseSearchState $state */
-        $state->getQuery()->where('sender_id', $negate ? '!=' : '=', $userId);
+        $state->getQuery()->where('sender_id', $userId);
     }
 }

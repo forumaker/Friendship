@@ -30,6 +30,13 @@ class FriendshipEventUserFilter implements FilterInterface
 
     public function filter(SearchState $state, string|array $value, bool $negate): void
     {
+        // Same reasoning as FriendshipUserFilter — negation would turn a
+        // single-user grant into "every event except this user's", leaking
+        // the whole history table to a moderator scoped to one id.
+        if ($negate) {
+            throw new PermissionDeniedException();
+        }
+
         $userId = $this->asInt($value);
         $actor = $state->getActor();
 
@@ -41,6 +48,6 @@ class FriendshipEventUserFilter implements FilterInterface
         }
 
         /** @var DatabaseSearchState $state */
-        $state->getQuery()->where('user_id', $negate ? '!=' : '=', $userId);
+        $state->getQuery()->where('user_id', $userId);
     }
 }

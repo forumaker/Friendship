@@ -28,6 +28,14 @@ class FriendshipUserFilter implements FilterInterface
 
     public function filter(SearchState $state, string|array $value, bool $negate): void
     {
+        // Negation has no valid meaning here — filter[user] grants access to
+        // one specific user's friend list, not "everyone except this user"
+        // (which would hand out the whole friendships table to anyone with
+        // plain viewOthers).
+        if ($negate) {
+            throw new PermissionDeniedException();
+        }
+
         $userId = $this->asInt($value);
         $actor = $state->getActor();
 
@@ -40,6 +48,6 @@ class FriendshipUserFilter implements FilterInterface
         }
 
         /** @var DatabaseSearchState $state */
-        $state->getQuery()->where('user_id', $negate ? '!=' : '=', $userId);
+        $state->getQuery()->where('user_id', $userId);
     }
 }
