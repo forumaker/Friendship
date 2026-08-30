@@ -10,8 +10,8 @@ Adds a friendship system — members send friend requests, build a friends list 
 - 🔔 Notifications for new requests, declines and removals, deep-linking straight to the request
 - 🏷️ Friend-count badge on the user card and in the post header, with an admin-configurable color
 - ⚙️ Per-user toggles to opt out of either badge, gated behind the admin-wide switches
-- ➕ Add/remove friend button in the profile dropdown and on other users' «Друзья» page
-- 🔐 Separate permissions for adding friends, viewing others' friends lists, and moderating
+- ➕ Add/remove friend button in the profile dropdown and on other users Friends page
+- 🔐 Separate permissions for adding friends, viewing others friends lists, and moderating
 
 
 ## 📸 Screenshots
