@@ -13,6 +13,7 @@ forumaker-friendship:
       friends_count: "{count, plural, one {# friend} other {# friends}}"
       requests_btn: "Requests"
       no_friends: "No friends yet"
+      friends_hidden: "Friends are hidden"
       friends_since: "Friends since {date}"
       load_more: "Load more"
 

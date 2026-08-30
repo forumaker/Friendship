@@ -13,6 +13,7 @@ forumaker-friendship:
       friends_count: "{count, plural, one {# друг} few {# друга} many {# друзей} other {# друзей}}"
       requests_btn: "Заявки"
       no_friends: "Пока нет друзей"
+      friends_hidden: "Друзья скрыты"
       friends_since: "Друзья с {date}"
       load_more: "Показать ещё"
 

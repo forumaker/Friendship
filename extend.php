@@ -82,9 +82,9 @@ return [
     (new Extend\Settings())
         ->default('forumaker-friendship.show_badge_on_usercard', true)
         ->default('forumaker-friendship.show_badge_on_post', true)
-        ->default('forumaker-friendship.badge_color', '#ffcb7f')
-        ->default('forumaker-friendship.badge_bg_color', '#ffcb7f')
-        ->default('forumaker-friendship.badge_icon', 'fas fa-clipboard-user')
+        ->default('forumaker-friendship.badge_color', '#45698D')
+        ->default('forumaker-friendship.badge_bg_color', '#45698D')
+        ->default('forumaker-friendship.badge_icon', 'fas fa-hand-peace')
         ->default('forumaker-friendship.event_retention_days', 90),
 
     // Model policies for authorization

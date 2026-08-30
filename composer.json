@@ -42,9 +42,9 @@
       "title": "Friendship",
       "category": "feature",
       "icon": {
-        "name": "fas fa-clipboard-user",
-        "backgroundColor": "#ffcb7f",
-        "color": "#1A1A1A"
+        "name": "fas fa-hand-peace",
+        "backgroundColor": "#45698D",
+        "color": "#ffffff"
       }
     }
   },

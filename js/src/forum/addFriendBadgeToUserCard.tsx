@@ -14,8 +14,8 @@ export default function addFriendBadgeToUserCard(): void {
     const count = (user.attribute('friendCount') as number) || 0;
     if (count === 0) return;
 
-    const color = (app.forum.attribute('friendshipBadgeColor') as string) || '#ffcb7f';
-    const icon = (app.forum.attribute('friendshipBadgeIcon') as string) || 'fas fa-clipboard-user';
+    const color = (app.forum.attribute('friendshipBadgeColor') as string) || '#45698D';
+    const icon = (app.forum.attribute('friendshipBadgeIcon') as string) || 'fas fa-hand-peace';
 
     items.add(
       'friendCount',

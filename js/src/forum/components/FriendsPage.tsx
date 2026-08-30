@@ -5,6 +5,7 @@ import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
 import Avatar from 'flarum/common/components/Avatar';
 import username from 'flarum/common/helpers/username';
+import type RequestError from 'flarum/common/utils/RequestError';
 import type Mithril from 'mithril';
 import type User from 'flarum/common/models/User';
 import type { Friendship } from '../../common';
@@ -22,6 +23,7 @@ export default class FriendsPage extends UserPage {
   hasMore: boolean = false;
   search: string = '';
   searchTimer: number | null = null;
+  friendsHidden: boolean = false;
 
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
@@ -57,6 +59,7 @@ export default class FriendsPage extends UserPage {
     } else {
       this.loading = true;
       this.friends = [];
+      this.friendsHidden = false;
     }
     m.redraw();
 
@@ -64,12 +67,32 @@ export default class FriendsPage extends UserPage {
       const filter: Record<string, unknown> = { user: this.user.id() };
       if (this.search.trim()) filter.q = this.search.trim();
 
-      const results = await app.store.find<Friendship[]>('friendships', {
-        filter,
-        include: 'friend',
-        sort: '-createdAt',
-        page: { offset: loadMore ? this.friends.length : 0, limit: 24 },
-      });
+      const results = await app.store.find<Friendship[]>(
+        'friendships',
+        {
+          filter,
+          include: 'friend',
+          sort: '-createdAt',
+          page: { offset: loadMore ? this.friends.length : 0, limit: 24 },
+        },
+        undefined,
+        {
+          // A 403 here means friendship.viewOthers is off for this actor —
+          // an expected, common state (most guests/members), not a real
+          // error. Swap in the "hidden" empty state instead of Flarum's
+          // red permission-denied alert; anything else (network failure,
+          // 500) still falls through to the default handling.
+          errorHandler: (error: RequestError) => {
+            if (error.status === 403) {
+              this.friendsHidden = true;
+
+              return;
+            }
+
+            return false;
+          },
+        }
+      );
       const newFriends = results as unknown as Friendship[];
 
       this.friends = loadMore ? [...this.friends, ...newFriends] : newFriends;
@@ -97,6 +120,30 @@ export default class FriendsPage extends UserPage {
   }
 
   content(): Mithril.Children {
+    // Bare spinner, no header/search chrome, while the very first load is
+    // still in flight — we don't yet know if this actor even has permission
+    // to see anything, so nothing below should render prematurely (was
+    // flashing the full "authorized" layout for ~500ms before friendsHidden
+    // had a chance to flip on a 403).
+    if (this.loading) {
+      return (
+        <div className="FriendsPage">
+          <LoadingIndicator />
+        </div>
+      );
+    }
+
+    if (this.friendsHidden) {
+      return (
+        <div className="FriendsPage">
+          <div className="FriendsPage-emptyState">
+            <i className="fas fa-user-friends FriendsPage-emptyIcon"></i>
+            <p>{app.translator.trans('forumaker-friendship.forum.user.friends_hidden')}</p>
+          </div>
+        </div>
+      );
+    }
+
     const isOwnPage = !!this.user && app.session.user?.id() === this.user.id();
     const canModerate = app.forum.attribute('canModerateFriendships') === true;
     const canOpenRequests = isOwnPage ? app.forum.attribute('canAddFriends') === true : canModerate;
@@ -150,9 +197,7 @@ export default class FriendsPage extends UserPage {
           oninput={(e: InputEvent) => this.onsearch((e.target as HTMLInputElement).value)}
         />
 
-        {this.loading ? (
-          <LoadingIndicator />
-        ) : this.friends.length === 0 ? (
+        {this.friends.length === 0 ? (
           <div className="FriendsPage-emptyState">
             <i className="fas fa-user-friends FriendsPage-emptyIcon"></i>
             <p>{app.translator.trans('forumaker-friendship.forum.user.no_friends')}</p>

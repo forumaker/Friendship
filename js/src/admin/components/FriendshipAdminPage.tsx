@@ -3,11 +3,11 @@ import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import { getContrastColor } from '../../common';
 
 const BADGE_COLOR_SETTING = 'forumaker-friendship.badge_color';
-const BADGE_COLOR_DEFAULT = '#ffcb7f';
+const BADGE_COLOR_DEFAULT = '#45698D';
 const BADGE_BG_COLOR_SETTING = 'forumaker-friendship.badge_bg_color';
-const BADGE_BG_COLOR_DEFAULT = '#ffcb7f';
+const BADGE_BG_COLOR_DEFAULT = '#45698D';
 const BADGE_ICON_SETTING = 'forumaker-friendship.badge_icon';
-const BADGE_ICON_DEFAULT = 'fas fa-clipboard-user';
+const BADGE_ICON_DEFAULT = 'fas fa-hand-peace';
 
 export default class FriendshipAdminPage extends ExtensionPage {
   content() {
