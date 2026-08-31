@@ -252,7 +252,10 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
         friendshipIsFriend: true,
         friendCount: ((sender.attribute('friendCount') as number) || 0) + 1,
       });
-      this.attrs.user.pushAttributes({ friendCount: ((this.attrs.user.attribute('friendCount') as number) || 0) + 1 });
+      this.attrs.user.pushAttributes({
+        friendCount: ((this.attrs.user.attribute('friendCount') as number) || 0) + 1,
+        friendshipIncomingRequestCount: Math.max(0, ((this.attrs.user.attribute('friendshipIncomingRequestCount') as number) || 0) - 1),
+      });
 
       app.alerts.show({ type: 'success' }, app.translator.trans('forumaker-friendship.forum.requests_modal.accept_success'));
       this.attrs.onChange?.();
@@ -272,6 +275,10 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
       const state = this.state.incoming;
       state.items = state.items.filter((r) => r.id() !== request.id());
       state.total = Math.max(0, state.total - 1);
+
+      this.attrs.user.pushAttributes({
+        friendshipIncomingRequestCount: Math.max(0, ((this.attrs.user.attribute('friendshipIncomingRequestCount') as number) || 0) - 1),
+      });
 
       this.attrs.onChange?.();
     } finally {

@@ -183,7 +183,12 @@ export default class FriendsPage extends UserPage {
             )}
             {canOpenRequests && this.user && (
               <Button className="Button Button--primary" icon="fas fa-user-clock" onclick={() => this.showRequestsModal()}>
-                {app.translator.trans('forumaker-friendship.forum.user.requests_btn')}
+                {(() => {
+                  const incoming = (this.user!.attribute('friendshipIncomingRequestCount') as number) || 0;
+                  return incoming > 0
+                    ? app.translator.trans('forumaker-friendship.forum.user.requests_btn_count', { count: incoming })
+                    : app.translator.trans('forumaker-friendship.forum.user.requests_btn');
+                })()}
               </Button>
             )}
           </div>
@@ -225,6 +230,7 @@ export default class FriendsPage extends UserPage {
                     <Button
                       className="Button Button--icon Button--flat FriendsPage-itemRemove"
                       icon="fas fa-user-minus"
+                      aria-label={app.translator.trans('forumaker-friendship.forum.dropdown.remove_friend_btn')}
                       onclick={() => app.modal.show(RemoveFriendConfirmModal, { user: friend, friendship, onRemoved: () => this.loadFriends() })}
                     />
                   )}

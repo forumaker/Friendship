@@ -22,6 +22,11 @@ class UserResourceFields
             // the 'friendships' relation registered on User in extend.php.
             Schema\Integer::make('friendCount')
                 ->countRelation('friendships'),
+            // Drives the count on the "Requests" button on the friends page
+            // (FriendsPage.tsx) — not actor-relative, just this user's own
+            // pending inbox, same N+1-safe batching as friendCount above.
+            Schema\Integer::make('friendshipIncomingRequestCount')
+                ->countRelation('friendshipIncomingRequests'),
             // These three are actor-relative (not just about $user), so
             // they can't use countRelation — see FriendshipActorContext's
             // docblock for how they stay N+1-safe instead.

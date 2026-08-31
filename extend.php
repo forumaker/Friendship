@@ -54,7 +54,8 @@ return [
     // Api\UserResourceFields' countRelation('friendships')).
     (new Extend\Model(User::class))
         ->relationship('friendships', fn ($user) => $user->hasMany(Friendship::class, 'user_id'))
-        ->relationship('friendshipEvents', fn ($user) => $user->hasMany(FriendshipEvent::class, 'user_id')),
+        ->relationship('friendshipEvents', fn ($user) => $user->hasMany(FriendshipEvent::class, 'user_id'))
+        ->relationship('friendshipIncomingRequests', fn ($user) => $user->hasMany(FriendshipRequest::class, 'recipient_id')),
 
     // Per-user badge visibility preferences — each only has an effect where
     // the matching admin-wide toggle is also on (see ForumResourceFields'
