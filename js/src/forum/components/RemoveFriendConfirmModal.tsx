@@ -76,7 +76,7 @@ export default class RemoveFriendConfirmModal extends Modal<RemoveFriendConfirmM
       // friendship.user() when a specific row was loaded (FriendsPage,
       // possibly moderating someone else's list), otherwise the actor
       // (the profile dropdown only ever acts on its own relationship).
-      const owner = this.attrs.friendship?.user() ?? app.session.user;
+      const owner = (this.attrs.friendship?.user() ?? app.session.user) as User | null | undefined;
       owner?.pushAttributes({ friendCount: Math.max(0, ((owner.attribute('friendCount') as number) || 0) - 1) });
 
       this.hide();

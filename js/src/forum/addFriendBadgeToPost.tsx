@@ -14,7 +14,7 @@ import { getContrastColor } from '../common';
  * 2026-08-31 when this used a direct PostUser import).
  */
 export default function addFriendBadgeToPost(): void {
-  extend('flarum/forum/components/PostUser' as any, 'userViewItems', function (items: any, user: User) {
+  extend('flarum/forum/components/PostUser' as any, 'userViewItems', function (this: any, items: any, user: any) {
     if (!user) return;
 
     if (app.forum.attribute('friendshipShowBadgeOnPost') === false) return;

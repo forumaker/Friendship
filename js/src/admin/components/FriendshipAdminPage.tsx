@@ -46,12 +46,7 @@ export default class FriendshipAdminPage extends ExtensionPage {
               <div className="FriendshipAdminPage-colorRow">
                 <input type="color" className="FriendshipAdminPage-colorInput" bidi={colorStream} />
                 <input type="text" className="FormControl FriendshipAdminPage-colorHex" bidi={colorStream} />
-                <input
-                  type="text"
-                  className="FormControl FriendshipAdminPage-iconInput"
-                  placeholder={BADGE_ICON_DEFAULT}
-                  bidi={iconStream}
-                />
+                <input type="text" className="FormControl FriendshipAdminPage-iconInput" placeholder={BADGE_ICON_DEFAULT} bidi={iconStream} />
                 <span className="FriendshipAdminPage-iconPreview">
                   <i className={iconStream() || BADGE_ICON_DEFAULT} style={{ color: colorStream() || BADGE_COLOR_DEFAULT }} />
                 </span>

@@ -17,7 +17,7 @@ export default class FriendshipDeclinedNotification extends Notification {
   content(): Mithril.Children {
     const fromUser = this.attrs.notification.fromUser();
     const data = (this.attrs.notification.content() || {}) as Record<string, any>;
-    const name = fromUser?.displayName() ?? data.declinerName ?? '?';
+    const name = (fromUser ? fromUser.displayName() : undefined) ?? data.declinerName ?? '?';
 
     return app.translator.trans('forumaker-friendship.forum.notifications.declined_text', {
       name: <strong>{name}</strong>,

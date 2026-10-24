@@ -22,7 +22,7 @@ export default class FriendshipRequestedNotification extends Notification {
   content(): Mithril.Children {
     const fromUser = this.attrs.notification.fromUser();
     const data = (this.attrs.notification.content() || {}) as Record<string, any>;
-    const name = fromUser?.displayName() ?? data.senderName ?? '?';
+    const name = (fromUser ? fromUser.displayName() : undefined) ?? data.senderName ?? '?';
 
     return app.translator.trans('forumaker-friendship.forum.notifications.requested_text', {
       name: <strong>{name}</strong>,

@@ -17,7 +17,7 @@ export default class FriendshipRemovedNotification extends Notification {
   content(): Mithril.Children {
     const fromUser = this.attrs.notification.fromUser();
     const data = (this.attrs.notification.content() || {}) as Record<string, any>;
-    const name = fromUser?.displayName() ?? data.removerName ?? '?';
+    const name = (fromUser ? fromUser.displayName() : undefined) ?? data.removerName ?? '?';
 
     return app.translator.trans('forumaker-friendship.forum.notifications.removed_text', {
       name: <strong>{name}</strong>,

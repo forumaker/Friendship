@@ -73,7 +73,9 @@ export default class AddFriendConfirmModal extends Modal<AddFriendConfirmModalAt
       app.alerts.show(
         { type: 'success' },
         app.translator.trans(
-          response.status === 'auto_accepted' ? 'forumaker-friendship.forum.requests_modal.accept_success' : 'forumaker-friendship.forum.add_modal.success'
+          response.status === 'auto_accepted'
+            ? 'forumaker-friendship.forum.requests_modal.accept_success'
+            : 'forumaker-friendship.forum.add_modal.success'
         )
       );
     } catch (error) {

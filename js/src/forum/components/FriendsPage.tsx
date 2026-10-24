@@ -153,7 +153,10 @@ export default class FriendsPage extends UserPage {
     // the actor's own relationship to *that user* — not to their friends
     // listed below — same add/remove control as the profile dropdown.
     const showOwnRelationControl =
-      !isOwnPage && !!this.user && !!app.session.user && (this.user.attribute('friendshipIsFriend') === true || app.forum.attribute('canAddFriends') === true);
+      !isOwnPage &&
+      !!this.user &&
+      !!app.session.user &&
+      (this.user.attribute('friendshipIsFriend') === true || app.forum.attribute('canAddFriends') === true);
 
     return (
       <div className="FriendsPage">

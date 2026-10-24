@@ -4,8 +4,5 @@ import FriendshipRequest from './models/FriendshipRequest';
 import FriendshipEvent from './models/FriendshipEvent';
 
 export default [
-  new Extend.Store()
-    .add('friendships', Friendship)
-    .add('friendship-requests', FriendshipRequest)
-    .add('friendship-events', FriendshipEvent),
+  new Extend.Store().add('friendships', Friendship).add('friendship-requests', FriendshipRequest).add('friendship-events', FriendshipEvent),
 ];

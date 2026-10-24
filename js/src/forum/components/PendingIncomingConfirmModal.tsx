@@ -32,7 +32,12 @@ export default class PendingIncomingConfirmModal extends Modal<PendingIncomingCo
       <div className="Modal-body">
         <p className="FriendshipConfirmModal-text">{app.translator.trans('forumaker-friendship.forum.pending_modal.text')}</p>
         <div className="FriendshipConfirmModal-actions">
-          <Button className="Button Button--primary Button--block" icon="fas fa-user-plus" loading={this.loading} onclick={() => this.respond('accept')}>
+          <Button
+            className="Button Button--primary Button--block"
+            icon="fas fa-user-plus"
+            loading={this.loading}
+            onclick={() => this.respond('accept')}
+          >
             {app.translator.trans('forumaker-friendship.forum.pending_modal.accept_btn')}
           </Button>
           <Button className="Button Button--block" disabled={this.loading} onclick={() => this.respond('decline')}>

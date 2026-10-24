@@ -42,7 +42,7 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   busyId: string | null = null;
   highlighted: string | null = null;
 
-  state: Record<Direction, DirectionState> = { incoming: emptyState(), outgoing: emptyState() };
+  directionState: Record<Direction, DirectionState> = { incoming: emptyState(), outgoing: emptyState() };
 
   className() {
     return 'FriendshipRequestsModal Modal--medium';
@@ -72,7 +72,7 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   async load(direction: Direction, loadMore: boolean = false): Promise<void> {
-    const state = this.state[direction];
+    const state = this.directionState[direction];
 
     if (loadMore) {
       state.loadingMore = true;
@@ -105,7 +105,7 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   search(direction: Direction, value: string): void {
-    const state = this.state[direction];
+    const state = this.directionState[direction];
     state.search = value;
 
     if (state.searchTimer) window.clearTimeout(state.searchTimer);
@@ -113,7 +113,7 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   content(): Mithril.Children {
-    const state = this.state[this.activeTab];
+    const state = this.directionState[this.activeTab];
 
     return (
       <div className="Modal-body">
@@ -123,13 +123,13 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
               className={'Button FriendshipRequestsModal-tab' + (this.activeTab === 'incoming' ? ' active' : '')}
               onclick={() => (this.activeTab = 'incoming')}
             >
-              {app.translator.trans('forumaker-friendship.forum.requests_modal.incoming_tab', { count: this.state.incoming.total })}
+              {app.translator.trans('forumaker-friendship.forum.requests_modal.incoming_tab', { count: this.directionState.incoming.total })}
             </Button>
             <Button
               className={'Button FriendshipRequestsModal-tab' + (this.activeTab === 'outgoing' ? ' active' : '')}
               onclick={() => (this.activeTab = 'outgoing')}
             >
-              {app.translator.trans('forumaker-friendship.forum.requests_modal.outgoing_tab', { count: this.state.outgoing.total })}
+              {app.translator.trans('forumaker-friendship.forum.requests_modal.outgoing_tab', { count: this.directionState.outgoing.total })}
             </Button>
           </div>
 
@@ -156,14 +156,16 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   renderTab(direction: Direction): Mithril.Children {
-    const state = this.state[direction];
+    const state = this.directionState[direction];
 
     return (
       <div>
         {state.items.length === 0 ? (
           <p className="FriendshipRequestsModal-empty">
             {app.translator.trans(
-              direction === 'incoming' ? 'forumaker-friendship.forum.requests_modal.no_incoming' : 'forumaker-friendship.forum.requests_modal.no_outgoing'
+              direction === 'incoming'
+                ? 'forumaker-friendship.forum.requests_modal.no_incoming'
+                : 'forumaker-friendship.forum.requests_modal.no_outgoing'
             )}
           </p>
         ) : (
@@ -182,7 +184,7 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   renderIncomingItems(): Mithril.Children {
-    return this.state.incoming.items.map((request) => {
+    return this.directionState.incoming.items.map((request) => {
       const sender = request.sender();
       if (!sender) return null;
       const busy = this.busyId === request.id();
@@ -210,7 +212,7 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   renderOutgoingItems(): Mithril.Children {
-    return this.state.outgoing.items.map((request) => {
+    return this.directionState.outgoing.items.map((request) => {
       const recipient = request.recipient();
       if (!recipient) return null;
       const busy = this.busyId === request.id();
@@ -235,19 +237,19 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   async accept(request: FriendshipRequest): Promise<void> {
-    this.busyId = request.id();
+    this.busyId = request.id() ?? null;
     m.redraw();
 
     try {
       await app.request({ method: 'POST', url: `${app.forum.attribute('apiUrl')}/friendship-requests/${request.id()}/accept` });
 
-      const state = this.state.incoming;
+      const state = this.directionState.incoming;
       state.items = state.items.filter((r) => r.id() !== request.id());
       state.total = Math.max(0, state.total - 1);
 
       // No response body carries updated user resources for this endpoint —
       // both sides' friendCount are bumped locally instead.
-      const sender = request.sender();
+      const sender = request.sender() as User | null;
       sender?.pushAttributes({
         friendshipIsFriend: true,
         friendCount: ((sender.attribute('friendCount') as number) || 0) + 1,
@@ -266,13 +268,13 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   async decline(request: FriendshipRequest): Promise<void> {
-    this.busyId = request.id();
+    this.busyId = request.id() ?? null;
     m.redraw();
 
     try {
       await app.request({ method: 'POST', url: `${app.forum.attribute('apiUrl')}/friendship-requests/${request.id()}/decline` });
 
-      const state = this.state.incoming;
+      const state = this.directionState.incoming;
       state.items = state.items.filter((r) => r.id() !== request.id());
       state.total = Math.max(0, state.total - 1);
 
@@ -288,13 +290,13 @@ export default class RequestsModal extends Modal<RequestsModalAttrs> {
   }
 
   async cancel(request: FriendshipRequest): Promise<void> {
-    this.busyId = request.id();
+    this.busyId = request.id() ?? null;
     m.redraw();
 
     try {
       await request.delete();
 
-      const state = this.state.outgoing;
+      const state = this.directionState.outgoing;
       state.items = state.items.filter((r) => r.id() !== request.id());
       state.total = Math.max(0, state.total - 1);
 

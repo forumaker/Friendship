@@ -7,7 +7,11 @@ app.initializers.add('forumaker-friendship', () => {
   const registry = app.registry.for('forumaker-friendship').registerPage(FriendshipAdminPage);
 
   registry.registerPermission(
-    { permission: 'friendship.addFriends', icon: 'fas fa-user-plus', label: app.translator.trans('forumaker-friendship.admin.permissions.add_friends') },
+    {
+      permission: 'friendship.addFriends',
+      icon: 'fas fa-user-plus',
+      label: app.translator.trans('forumaker-friendship.admin.permissions.add_friends'),
+    },
     'start',
     95
   );

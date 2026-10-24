@@ -7,7 +7,7 @@ import showFriendActionModal from './showFriendActionModal';
 
 /** "Add friend" / "Remove friend" item in the profile dropdown. */
 export default function addFriendControlToDropdown(): void {
-  extend(UserControls, 'userControls', function (items: any, user: User) {
+  extend(UserControls as any, 'userControls', function (this: any, items: any, user: any) {
     if (!app.session.user) return;
     if (app.session.user.id() === user.id()) return;
 
