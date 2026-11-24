@@ -76,6 +76,7 @@ return [
     // Notifications
     (new Extend\Notification())
         ->type(Notification\FriendshipRequestedBlueprint::class, ['alert'])
+        ->type(Notification\FriendshipAcceptedBlueprint::class, ['alert'])
         ->type(Notification\FriendshipRemovedBlueprint::class, ['alert'])
         ->type(Notification\FriendshipDeclinedBlueprint::class, ['alert']),
 

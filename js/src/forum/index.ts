@@ -5,6 +5,7 @@ import addFriendBadgeToUserCard from './addFriendBadgeToUserCard';
 import addFriendBadgeToPost from './addFriendBadgeToPost';
 import addFriendControlToDropdown from './addFriendControlToDropdown';
 import addFriendUserSettings from './addFriendUserSettings';
+import FriendshipAcceptedNotification from './components/FriendshipAcceptedNotification';
 import FriendshipRequestedNotification from './components/FriendshipRequestedNotification';
 import FriendshipRemovedNotification from './components/FriendshipRemovedNotification';
 import FriendshipDeclinedNotification from './components/FriendshipDeclinedNotification';
@@ -13,6 +14,7 @@ export { default as extend } from './extend';
 
 app.initializers.add('forumaker-friendship', () => {
   app.notificationComponents.friendshipRequested = FriendshipRequestedNotification;
+  app.notificationComponents.friendshipAccepted = FriendshipAcceptedNotification;
   app.notificationComponents.friendshipRemoved = FriendshipRemovedNotification;
   app.notificationComponents.friendshipDeclined = FriendshipDeclinedNotification;
 
@@ -21,6 +23,11 @@ app.initializers.add('forumaker-friendship', () => {
       name: 'friendshipRequested',
       icon: 'fas fa-user-plus',
       label: app.translator.trans('forumaker-friendship.forum.settings.notify_requested_label'),
+    });
+    items.add('friendshipAccepted', {
+      name: 'friendshipAccepted',
+      icon: 'fas fa-user-check',
+      label: app.translator.trans('forumaker-friendship.forum.settings.notify_request_accepted_label'),
     });
     items.add('friendshipRemoved', {
       name: 'friendshipRemoved',

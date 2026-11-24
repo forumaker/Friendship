@@ -32,7 +32,7 @@ class AcceptDeclineRequestTest extends TestCase
         ]);
     }
 
-    public function test_recipient_can_accept_a_request()
+    public function test_recipient_can_accept_a_request_and_sender_is_notified()
     {
         $response = $this->send(
             $this->request('POST', '/api/friendship-requests/1/accept', ['authenticatedAs' => 3])
@@ -45,6 +45,12 @@ class AcceptDeclineRequestTest extends TestCase
         $this->assertNotNull($this->database()->table('friendships')->where('user_id', 3)->where('friend_id', 2)->first());
 
         $this->assertEquals(2, $this->database()->table('friendship_events')->count());
+
+        $notifications = $this->database()->table('notifications')->where('type', 'friendshipAccepted')->get();
+        $this->assertCount(1, $notifications);
+        $this->assertEquals(2, $notifications[0]->user_id);
+        $this->assertEquals(3, $notifications[0]->from_user_id);
+        $this->assertEquals(3, $notifications[0]->subject_id);
     }
 
     public function test_recipient_can_decline_a_request_and_sender_is_notified()

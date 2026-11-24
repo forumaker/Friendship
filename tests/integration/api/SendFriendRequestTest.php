@@ -98,6 +98,11 @@ class SendFriendRequestTest extends TestCase
         $backward = $this->database()->table('friendships')->where('user_id', 3)->where('friend_id', 2)->first();
         $this->assertNotNull($forward);
         $this->assertNotNull($backward);
+
+        $notifications = $this->database()->table('notifications')->where('type', 'friendshipAccepted')->get();
+        $this->assertCount(1, $notifications);
+        $this->assertEquals(3, $notifications[0]->user_id);
+        $this->assertEquals(2, $notifications[0]->from_user_id);
     }
 
     public function test_cannot_send_a_friend_request_without_permission()

@@ -81,6 +81,7 @@ forumaker-friendship:
 
     notifications:
       requested_text: "Пользователь {name} хочет добавить вас в друзья"
+      accepted_text: "Пользователь {name} принял вашу заявку в друзья"
       removed_text: "Пользователь {name} удалил вас из друзей"
       declined_text: "Пользователь {name} отклонил заявку в друзья"
 
@@ -89,6 +90,7 @@ forumaker-friendship:
       show_on_usercard: "Показывать количество друзей рядом с аватаром в профиле"
       show_in_posts: "Показывать количество друзей рядом с аватаром в сообщениях"
       notify_requested_label: "Кто-то предложил мне дружить"
+      notify_request_accepted_label: "Кто-то принял мою заявку в друзья"
       notify_removed_label: "Кто-то удалил меня из друзей"
       notify_declined_label: "Кто-то отклонил мою заявку в друзья"
 

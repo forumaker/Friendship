@@ -13,6 +13,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use forumaker\Friendship\Friendship;
 use forumaker\Friendship\FriendshipEvent;
 use forumaker\Friendship\FriendshipRequest;
+use forumaker\Friendship\Notification\FriendshipAcceptedBlueprint;
 use forumaker\Friendship\Notification\FriendshipDeclinedBlueprint;
 use forumaker\Friendship\Notification\FriendshipRemovedBlueprint;
 use forumaker\Friendship\Notification\FriendshipRequestedBlueprint;
@@ -116,7 +117,12 @@ class FriendshipManager
         $sender = $request->sender;
         $recipient = $request->recipient;
 
-        FriendshipRequest::query()->getConnection()->transaction(function () use ($actor, $request, $sender, $recipient) {
+        $accepted = $request->getConnection()->transaction(function () use ($actor, $request, $sender, $recipient): bool {
+            $request = FriendshipRequest::query()->lockForUpdate()->find($request->id);
+            if (! $request) {
+                return false;
+            }
+
             $now = $request->created_at ?? Carbon::now();
 
             Friendship::query()->firstOrCreate(
@@ -131,7 +137,13 @@ class FriendshipManager
             $request->delete();
 
             $this->logEvent($actor, $sender, $recipient, FriendshipEvent::ACTION_ACCEPTED);
+
+            return true;
         });
+
+        if ($accepted) {
+            $this->notifications->sync(new FriendshipAcceptedBlueprint($actor, $request->id), [$sender]);
+        }
     }
 
     public function declineRequest(User $actor, FriendshipRequest $request): void
